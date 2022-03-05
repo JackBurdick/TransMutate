@@ -80,8 +80,8 @@ class _Additive(ScoringFunction):
     NOTE: I'm not convinced the following is implemented correctly but have
     included with a leading _
 
-    It is based on a combination of: -
-    https://medium.com/analytics-vidhya/neural-machine-translation-
+    It is based on a combination of:
+    - https://medium.com/analytics-vidhya/neural-machine-translation-
         using-bahdanau-attention-mechanism-d496c9be30c3
     - https://github.com/tensorflow/addons/blob/
         8cec33fcaaf1cf90aec7bdd55a0fcdbb251ce5c2/

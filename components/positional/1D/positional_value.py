@@ -4,6 +4,8 @@ from tensorflow.keras.layers import Layer
 
 """
 Create values for positional information
+
+TODO: think through absolute/relative & fixed(encoding)/learned(embedding)
 """
 
 
