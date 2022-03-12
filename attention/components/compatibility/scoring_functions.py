@@ -2,8 +2,9 @@ import tensorflow as tf
 from tensorflow.keras.layers import Layer
 
 """
-target ~ query
-source ~ key
+# TODO: is this q=source and target=k correct?
+target ~ key
+source ~ query
 """
 
 
