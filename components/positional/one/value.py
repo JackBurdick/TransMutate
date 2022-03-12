@@ -36,7 +36,7 @@ class EncodingValues(PositionalValues):
 
     def _values_fn(self, seq_len, embed_d):
         raise NotImplementedError(
-            f"Must implement a `values_fn(seq_len, embed_d)` in the subclass"
+            "Must implement a `values_fn(seq_len, embed_d)` in the subclass"
         )
 
     def call(self, seq_len, embed_d):
