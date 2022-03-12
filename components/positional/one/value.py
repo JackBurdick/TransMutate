@@ -5,7 +5,10 @@ from tensorflow.keras.layers import Layer
 """
 Create values for positional information
 
-TODO: think through absolute/relative & fixed(encoding)/learned(embedding)
+TODO: think through/organize on absolute/relative &
+fixed(encoding)/learned(embedding)
+
+TODO: Maybe create a custom Error that will show shapes by default
 """
 
 
@@ -17,7 +20,7 @@ class PositionalValues(Layer):
         self.values_fn = self._values_fn
 
     def _values_fn(self):
-        raise NotImplementedError(f"Must implement a `values_fn()` in the subclass")
+        raise NotImplementedError("Must implement a `values_fn()` in the subclass")
 
     def call(self):
         out = self.values_fn()
