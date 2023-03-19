@@ -30,7 +30,7 @@ class Attention(Layer):
         # compute the compatibility scores
         if not self.compatibility:
             raise ValueError("Must specify a `compatibility` function")
-        attn_w = self.compatibility(source=k, target=q)
+        attn_w = self.compatibility(target=q, source=k)
 
         # select and apply attention scores to the values
         if not self.select_and_apply:

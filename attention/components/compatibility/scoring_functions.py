@@ -15,13 +15,13 @@ class ScoringFunction(Layer):
         super().__init__(**kwargs)
         self.score_fn = self._score_fn
 
-    def _score_fn(self, source, target):
+    def _score_fn(self, target, source):
         raise NotImplementedError(
-            f"Must implement a `score_fn(source, target)` in the subclass"
+            "Must implement a `score_fn(target, source)` in the subclass"
         )
 
-    def call(self, source, target):
-        score = self.score_fn(source=source, target=target)
+    def call(self, target, source):
+        score = self.score_fn(target=target, source=source)
         return score
 
 
@@ -41,8 +41,8 @@ class DotProduct(ScoringFunction):
         super().__init__(**kwargs)
         self.score_fn = self.dot_product
 
-    def dot_product(self, source, target):
-        scores = tf.matmul(source, target, transpose_b=True)
+    def dot_product(self, target, source):
+        scores = tf.matmul(target, source, transpose_b=True)
         return scores
 
 
@@ -65,12 +65,12 @@ class ScaledDotProduct(DotProduct):
         super().__init__(**kwargs)
         self.score_fn = self.scaled_dot_product
 
-    def scaled_dot_product(self, source, target):
+    def scaled_dot_product(self, target, source):
         # standard dot product
-        matmul_st = self.dot_product(source, target)
+        matmul_ts = self.dot_product(target, source)
         # scaling factor
         n = tf.cast(tf.shape(source)[-1], tf.float32)
-        scores = matmul_st / tf.math.sqrt(n)
+        scores = matmul_ts / tf.math.sqrt(n)
         return scores
 
 
@@ -109,7 +109,7 @@ class _Additive(ScoringFunction):
         self.units = units
 
         if self.units is None:
-            raise ValueError(f"please specify depth of the query mechanism")
+            raise ValueError("please specify depth of the query mechanism")
         assert isinstance(self.units, int), TypeError(
             f"units ({units}) should be type {int}, not {type(units)}"
         )
@@ -127,10 +127,10 @@ class _Additive(ScoringFunction):
         )
         self.built = True
 
-    def additive(self, source, target):
+    def additive(self, target, source):
         # setup
-        source = self.w1(source)
         target = self.w2(target)
+        source = self.w1(source)
 
         # [batch, ...] -> [batch, 1, ...] (for broadcast)
         source = tf.expand_dims(source, 1)
