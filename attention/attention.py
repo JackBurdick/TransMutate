@@ -26,8 +26,17 @@ class Attention(Layer):
 
     def call(self, q, k, v):
         # NOTE: typically the query=target, and the key/values=source
+
+        # compute the compatibility scores
+        if not self.compatibility:
+            raise ValueError("Must specify a `compatibility` function")
         attn_w = self.compatibility(source=k, target=q)
+
+        # select and apply attention scores to the values
+        if not self.select_and_apply:
+            raise ValueError("Must specify a `select_and_apply` function")
         out = self.select_and_apply(score_sequence=attn_w, sequence=v)
+
         return out
 
 
