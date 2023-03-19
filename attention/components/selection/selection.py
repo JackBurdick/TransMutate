@@ -23,8 +23,14 @@ class SelectAndApply(Layer):
         self.apply = None
 
     def call(self, score_sequence, sequence):
+        if not self.selection:
+            raise ValueError("Must specify a `selection` function")
         weights = self.selection(sequence=score_sequence)
+
+        if not self.apply:
+            raise ValueError("Must specify a `apply` function")
         out = self.apply(weights=weights, sequence=sequence)
+
         return out
 
 
