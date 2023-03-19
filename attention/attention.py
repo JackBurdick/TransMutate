@@ -25,8 +25,8 @@ class Attention(Layer):
         self.select_and_apply = None
 
     def call(self, q, k, v):
-        # TODO: is this q=source and target=k correct?
-        attn_w = self.compatibility(source=q, target=k)
+        # NOTE: typically the query=target, and the key/values=source
+        attn_w = self.compatibility(source=k, target=q)
         out = self.select_and_apply(score_sequence=attn_w, sequence=v)
         return out
 
