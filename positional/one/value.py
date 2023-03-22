@@ -45,7 +45,7 @@ class EncodingValues(PositionalValues):
 
 
 class Sinusoidal(EncodingValues):
-    """Standard positional encoding from original paper
+    """Standard positional encoding from original paper with custom frequency
 
     The core functionality is derived from:
         - https://www.tensorflow.org/text/tutorials/transformer#positional_encoding
@@ -61,12 +61,13 @@ class Sinusoidal(EncodingValues):
     }
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, frequency=10000, **kwargs):
         super().__init__(**kwargs)
+        self.frequency = frequency
         self.values_fn = self.sinusoidal
 
     def _get_angles(self, pos, i, embed_d):
-        angle_rates = 1 / np.power(10000, (2 * (i // 2)) / np.float32(embed_d))
+        angle_rates = 1 / np.power(self.frequency, (2 * (i // 2)) / np.float32(embed_d))
         return pos * angle_rates
 
     def _sin_cos(self, seq_len, embed_d):
@@ -87,7 +88,7 @@ class Sinusoidal(EncodingValues):
         return tf.cast(pos_encoding, dtype=tf.float32)
 
     def sinusoidal(self, seq_len: int, embed_d: int):
-        """Create sinusoidal abosolute positional encodings
+        """Create sinusoidal absolute positional encodings
 
         Parameters
         ----------
@@ -101,6 +102,6 @@ class Sinusoidal(EncodingValues):
         Tensor[float]
             positional encodings
         """
-        # shape = (1, seq_len, embed_d)
+        # shape: [1, seq_len, embed_d]
         out = self._sin_cos(seq_len, embed_d)
         return out
