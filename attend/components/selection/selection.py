@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Layer
-from .components.apply import MatMul
-from .components.values import SoftMax
+from .components.apply import SelectionApply, MatMul
+from .components.values import SelectionFunction, SoftMax
 
 """
 The name of this isn't exactly right, but using `selection` as a placeholder for
@@ -10,17 +10,22 @@ now.
 
 
 class SelectAndApply(Layer):
-    """Base class for specified 'selection' functions
-
-    TODO:
-        check issubclass(self.apply, SelectionApply)
-        check issubclass(self.selection, SelectionFunction)
-    """
+    """Base class for specified 'selection' functions"""
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
         self.selection = None
+        if self.selection:
+            assert issubclass(
+                self.selection, SelectionFunction
+            ), f"{self.selection} must be a subclass of SelectionFunction"
+
         self.apply = None
+        if self.apply:
+            assert issubclass(
+                self.apply, SelectionApply
+            ), f"{self.apply} must be a subclass of SelectionApply"
 
     def call(self, score_sequence, sequence):
         if not self.selection:
@@ -28,7 +33,7 @@ class SelectAndApply(Layer):
         weights = self.selection(sequence=score_sequence)
 
         if not self.apply:
-            raise ValueError("Must specify a `apply` function")
+            raise ValueError("Must specify an `apply` function")
         out = self.apply(weights=weights, sequence=sequence)
 
         return out
