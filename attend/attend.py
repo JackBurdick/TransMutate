@@ -1,7 +1,8 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Layer
 from .components.compatibility.scoring_functions import ScaledDotProduct
-from .components.selection.selection import SoftMaxMatMul
+from .components.selection.selection import SoftMaxMatMul, SelectAndApply
+from .components.compatibility.compatibility import ScoringFunction
 
 """
 
@@ -13,16 +14,20 @@ class Attend(Layer):
 
     TODO functionality:
         There is not masking functionality (yet)
-
-    TODO:
-        check issubclass(self.compatibility, ScoringFunction)
-        check issubclass(self.select_and_apply, SelectAndApply)
     """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.compatibility = None
+        if self.compatibility:
+            assert issubclass(
+                self.compatibility, ScoringFunction
+            ), f"{self.compatibility} must be a subclass of ScoringFunction"
         self.select_and_apply = None
+        if self.select_and_apply:
+            assert issubclass(
+                self.select_and_apply, SelectAndApply
+            ), f"{self.select_and_apply} must be a subclass of SelectAndApply"
 
     def call(self, q, k, v):
         # NOTE: typically the query=target, and the key/values=source
